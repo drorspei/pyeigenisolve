@@ -1,5 +1,4 @@
 from setuptools import setup, Extension, find_packages
-from ctypes.util import find_library
 
 
 from distutils.command.build_ext import build_ext as build_ext_orig
@@ -15,20 +14,18 @@ class build_ext(build_ext_orig):
         return super().get_export_symbols(ext)
 
     def get_ext_filename(self, ext_name):
-        print("get_ext_filename")
         if self._ctypes:
             return ext_name + '.so'
         return super().get_ext_filename(ext_name)
 
-openmp = find_library("gomp")
 module = CTypesExtension(
     'libpyeigenisolve',
     ['pyeigenisolve.cpp'],
     include_dirs=['eigen-3.4.0'],
     extra_compile_args=[
-        '-fPIC', '-O3', '-shared', '-fopenmp',
-        f'-l:"{openmp}"'
-    ]
+        '-fPIC', '-O3', '-shared', '-fopenmp'
+    ],
+    language="c++"
 )
 
 
@@ -45,12 +42,12 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/drorspei/pyeigenisolve",
     packages=find_packages(),
-    classifiers=(
+    classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: Apache-2.0 License",
         "License :: OSI Approved :: MPL-2.0 License",
         "Operating System :: OS Independent",
-    ),
+    ],
     #cmdclass={'install': CustomInstall},
     py_modules=["pyeigenisolve"],
     cmdclass={'build_ext': build_ext},
