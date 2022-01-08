@@ -1,5 +1,5 @@
 from setuptools import setup, Extension, find_packages
-from setuptools.command.install import install
+from ctypes.util import find_library
 
 
 from distutils.command.build_ext import build_ext as build_ext_orig
@@ -20,10 +20,16 @@ class build_ext(build_ext_orig):
             return ext_name + '.so'
         return super().get_ext_filename(ext_name)
 
-module = CTypesExtension('libpyeigenisolve',
-                   ['pyeigenisolve.cpp'],
-                   include_dirs = ['eigen-3.4.0'],
-                   extra_compile_args=['-fPIC', '-O3', '-shared', '-fopenmp'])
+openmp = find_library("gomp")
+module = CTypesExtension(
+    'libpyeigenisolve',
+    ['pyeigenisolve.cpp'],
+    include_dirs=['eigen-3.4.0'],
+    extra_compile_args=[
+        '-fPIC', '-O3', '-shared', '-fopenmp',
+        f'-l:"{openmp}"'
+    ]
+)
 
 
 with open("README.md", "r") as fh:

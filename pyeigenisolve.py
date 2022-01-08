@@ -17,7 +17,7 @@ for _path in _libpaths:
     else:
         break
 else:
-    print("couldn't find libpyeigenisolve.so")
+    raise OSError("couldn't find libpyeigenisolve.so")
 
 
 def _get_ptr_array(x):
