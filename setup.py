@@ -25,6 +25,7 @@ module = CTypesExtension(
     extra_compile_args=[
         '-fPIC', '-O3', '-shared', '-fopenmp'
     ],
+    libraries=["gomp"],
     language="c++"
 )
 
